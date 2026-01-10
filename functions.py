@@ -1,5 +1,11 @@
 import torch
 import pandas as pd
+import gc
+
+
+def empty_cached():
+  gc.collect()
+  torch.cuda.empty_cache()
 
 
 def get_path(data, path):
@@ -49,6 +55,7 @@ def preprocessing(data):
 
   train = train[::3]
   train.reset_index(drop = True, inplace = True)
+
 
 def RLE_masking(rle, shape = (360, 360)):
     
