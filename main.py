@@ -4,6 +4,7 @@ import preproc
 import torch
 from torch import nn 
 from train_test_model import *
+from model import *
 from torchmetrics.segmentation import GeneralizedDiceScore
 
 
