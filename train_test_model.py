@@ -2,8 +2,8 @@ from _Dataset import *
 import tqdm
 
 def train_test_model(data, model,
-                     loss_fn,
-                     optimizer, metrics, epochs):
+                     loss_fn, optimizer, metrics, 
+                     epochs, batch_size):
   dataset = ImageDataset(train)
   trainset, validset = random_split(dataset, [0.9, 0.1])
   train_dataloader = DataLoader(trainset, shuffle=True, batch_size=batch_size)
