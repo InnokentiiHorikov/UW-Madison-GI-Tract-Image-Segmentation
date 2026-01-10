@@ -18,6 +18,7 @@ device = (
     else "cpu"
 )
 batch_size = 12
+epochs = 10
 
 optimizer = torch.optim.AdamW(model.parameters(), lr=1e-3,weight_decay=1e-2) 
 loss_fn = nn.BCEWithLogitsLoss() 
@@ -30,6 +31,6 @@ if __name__ == "__main__":
 
   train_test_model(data, model, 
                    loss_fn,optimizer, metrics,
-                   10)
+                   epochs, batch_size)
     
   
