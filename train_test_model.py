@@ -20,16 +20,18 @@ def train_test_model(data, model,
         masks = masks[:, :, :352, :352]
         image, masks = image.to(device), masks.to(device) 
     
-        optimizer.zero_grad()  
+        optimizer.zero_grad() 
         model.zero_grad()
         
         output = model(image)
-        
         L = loss_fn(output, masks)
-        M = metrics(output.to(torch.short), masks.to(torch.short))
+        output, masks = output.cpu(), masks.cpu()
+        
+        M = metrics(3, output, masks)
  
 
-        L.backward()   
+        L.backward() 
+        nn.utils.clip_grad_value_(model.parameters(), clip_value=0.1)
 
         optimizer.step()  
         train_tqdm.set_description(f"Train loss: {L.item()}  Metrics loss: {M[0]}-{M[1]}-{M[2]}")
@@ -38,6 +40,8 @@ def train_test_model(data, model,
 
     model.eval()
     valid_metrics = torch.tensor([0, 0, 0], dtype = torch.float)
+    val_loss = []
+    
     test_tqdm = tqdm.tqdm(valid_dataloader)
     with torch.no_grad():
         for batch in test_tqdm:
@@ -46,9 +50,13 @@ def train_test_model(data, model,
             image, masks = image.to(device), masks.to(device) 
             
             output = model(image)
+            L = loss_fn(output, masks)
+            val_loss.append(L.item())
             
-            M = metrics(output.to(torch.short), masks.to(torch.short))
-            valid_metrics = torch.vstack((valid_metrics, M.cpu()))
+            output, masks = output.cpu(), masks.cpu()
+            M = metrics(3, output, masks)
+            
+            valid_metrics = torch.vstack((valid_metrics, M))
 
-    print(f"Epoch {i}, Metrics: {torch.mean(valid_metrics[1:, :], axis = 0)}")
+    print(f"Epoch {i}, Loss: {np.mean(val_loss)} Metrics: {torch.mean(valid_metrics[1:, :], axis = 0)}")
                             
