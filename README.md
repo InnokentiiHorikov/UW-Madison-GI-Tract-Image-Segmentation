@@ -1,1 +1,5 @@
 First of all, I want to create model from scratch and understand the principes of a creating multiclass segmentation. As a result, a model results would be not great as should be. If you noticed a significant issues in the model or data preparation/analysis, please message me about it. I watched several notebooks from other users, and they used pre-trained model 
+
+```python
+def hello_world():
+    print("Hello, world!")
