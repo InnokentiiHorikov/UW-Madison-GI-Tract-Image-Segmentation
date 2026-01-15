@@ -29,4 +29,4 @@ for i in range(1, case_iter.shape[0]):
         train.path.iloc[case_iter[i-1]+day_iter[j-1]:day_iter[j]+case_iter[i-1]] +=  list_of_files
         
 ```
-![alt text]([https://github.com/adam-p/markdown-here/raw/master/src/common/images/icon48.png](https://github.com/InnokentiiHorikov/UW-Madison-GI-Tract-Image-Segmentation/blob/main/images/360_310_scancs.png "Logo Title Text 1")
+![alt text](https://github.com/InnokentiiHorikov/UW-Madison-GI-Tract-Image-Segmentation/blob/main/images/360_310_scancs.png "Logo Title Text 1")
