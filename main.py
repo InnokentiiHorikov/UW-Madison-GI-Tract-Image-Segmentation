@@ -11,7 +11,7 @@ warnings.filterwarnings("ignore")
 
 path = 'files/train.csv'
 path_to_processed_data = 'files/processed_data.csv'
-path_to_data = 'files/Data/'
+path_to_data = 'files/Data/train/'
 
 def main():
 
@@ -33,5 +33,6 @@ def main():
     plt.show()
 if __name__ == '__main__':
     main()
+
 
 
