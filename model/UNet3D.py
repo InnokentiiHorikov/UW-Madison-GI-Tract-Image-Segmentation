@@ -56,3 +56,20 @@ class UNet(nn.Module):
         self.up4 = torch.utils.checkpoint(self.up4)
         
         self.outc = torch.utils.checkpoint(self.outc)
+
+
+
+
+def init_weights(m):
+    
+    if isinstance(m, nn.Conv3d):
+        nn.init.kaiming_normal_(m.weight, mode='fan_out', nonlinearity='relu')
+        if m.bias is not None:
+            nn.init.constant_(m.bias, 0.01)
+    
+        
+    elif isinstance(m, (nn.BatchNorm3d)):
+        nn.init.constant_(m.weight, 1.0)  
+        nn.init.constant_(m.bias, 0.01)   
+
+
