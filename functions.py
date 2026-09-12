@@ -8,7 +8,8 @@ def empty_cached():
   torch.cuda.empty_cache()
 
 
-def preprocessing_trainset(trainset, path):
+  
+def preprocessing_trainset(trainset: pd.DataFrame, path: str) -> pd.DataFrame:
 
   for i in range(0, data.shape[0], 3):
     trainset['segmentation'].iloc[i] = trainset['segmentation'].iloc[i:i+3].to_numpy()
@@ -54,7 +55,9 @@ def preprocessing_trainset(trainset, path):
   
     trainset.reset_index(inplace = True, drop = True)
     return trainset
-    
+
+
+
 
 def RLE_masking(rle_arr: np.array(str | None), 
                 shape: (3, int, int, int)) -> torch.Tensor:
@@ -84,5 +87,46 @@ def RLE_masking(rle_arr: np.array(str | None),
     
     RLE = RLE.permute(1, 0, 2, 3)
     return RLE
+
+
+
+def tensor_to_gz(data: pd.DataFrame, 
+                 file_dir: (str, str),
+                 dtype: torch.dtype,
+                 compress: tuple | None = None,
+                 transform: v2.Compose = None) -> None:
+    
+    obj_dir, masks_dir = file_dir[0], file_dir[1]
+    n = data.shape[0]
+    affine = np.eye(4)   
+    
+    for idx in tqdm.tqdm(range(2), desc ="Converting objects and labels into niftiImage"):
+        
+        item = data.iloc[idx]    
+        to_save_path = item['case']+item['day']
+        
+        object_3d = to_3d_object(item['path'])
+
+        depth, height, width = object_3d.shape[0], object_3d.shape[2], object_3d.shape[3]
+        
+        masks = RLE_masking(item['segmentation'], 
+                                 (3, depth, height, width))
+        
+        if compress:
+            object_3d = object_3d[:, :, ::compress[0], ::compress[1]]
+            masks     = masks[:, :, ::compress[0], ::compress[1]]
+            
+        object_3d, masks = object_3d.permute(1, 3, 2, 0), masks.permute(1, 3, 2, 0)
+        
+        object_3d, masks = object_3d.detach().cpu().numpy().astype(dtype), \
+                           masks.detach().cpu().numpy().astype(dtype)
+ 
+        object_3d, masks = nib.Nifti1Image(object_3d, affine), \
+                           nib.Nifti1Image(masks, affine)
+        
+        
+        nib.save(object_3d, obj_dir+f"_image({idx}).nii.gz")
+        nib.save(masks, masks_dir+f"_masks({idx}).nii.gz")
+
 
 
