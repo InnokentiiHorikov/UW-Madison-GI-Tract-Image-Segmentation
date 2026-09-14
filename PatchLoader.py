@@ -16,7 +16,8 @@ class FixingAxes(tio.IntensityTransform):
         return subject
 
 
-def creating_patch_loader(path: str,
+def creating_patch_loader(object_path: str,
+                          label_path: str,
                           patch_size: (int, int, int),
                           seed: int = 42) -> torchio.SubjectLoader():
     
