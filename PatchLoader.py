@@ -20,10 +20,12 @@ def creating_patch_loader(object_path: str,
                           label_path: str,
                           patch_size: (int, int, int),
                           seed: int = 42) -> torchio.SubjectLoader():
-    
-    tio_subjects = [tio.Subject(image=tio.ScalarImage(object_path),
-                segmentation=tio.LabelMap(label_path)) 
-                for object_path, label_path in zip(objects_train, masks_train)]
+    objects, masks = sorted(os.path.join(object_path, path) for path in os.listdir(object_path)), \
+                             sorted(os.path.join(label_path, path) for path in os.listdir(label_path))
+
+    tio_subjects = [tio.Subject(image=tio.ScalarImage(objects),
+                segmentation=tio.LabelMap(masks)) 
+                for object_path, label_path in zip(objects, masks)]
 
     transform = tio.Compose([FixingAxes()])
 
