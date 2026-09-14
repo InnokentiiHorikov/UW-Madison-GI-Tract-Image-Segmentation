@@ -1,35 +1,50 @@
-import cv2
+import torchio as tio 
+from torch import Generator
 
-
-class ImageDataset(Dataset):
-    def __init__(self, data, transform = None):
-        
+class FixingAxes(tio.IntensityTransform):
+    """
+    The purpose of this class is fixing axes of torchio subject,
+    because somehow torchio subject mistakes depth and channel axes 
+    """
+    def __init__(self):
         super().__init__()
-        
-        self.data = data
-        self.transform = transform
 
+    def apply_transform(self, subject: tio.Subject) -> tio.Subject:
+        #D, C, H, W -> C, H, W, D
+        for image in subject.get_images(intensity_only=False):
+            image.data = image.data.permute(1,2,3,0)
+        return subject
+
+
+def creating_patch_loader(path: str,
+                          patch_size: (int, int, int),
+                          seed: int = 42) -> torchio.SubjectLoader():
     
-    def __len__(self):
-        return len(self.data)
+    tio_subjects = [tio.Subject(image=tio.ScalarImage(object_path),
+                segmentation=tio.LabelMap(label_path)) 
+                for object_path, label_path in zip(objects_train, masks_train)]
 
-    
-    def __getitem__(self, idx):
-        item = self.data.iloc[idx]    
-        image = cv2.imread(item['path'], cv2.IMREAD_ANYDEPTH)/65355
+    transform = tio.Compose([FixingAxes()])
 
-        if ((image.shape[0] + image.shape[1] < 720)):
-            image = cv2.copyMakeBorder(image, 0, 360 - image.shape[0], 
-                                       360-image.shape[1], 0,
-                                       cv2.BORDER_CONSTANT)            
-  
-        masks = torch.zeros((3, 360, 360), dtype = torch.half)
+    subjects_dataset = tio.SubjectsDataset(tio_subjects, 
+                                             transform = transform)
 
-        
-        segmentation = item['segm']
-        image = torch.tensor(image, dtype = torch.half)
+    queue = tio.Queue(
+                    subjects_dataset=subjects_dataset,
+                    max_length=200,           # Maximum number of patches in the queue
+                    samples_per_volume=10,    # Number of patches extracted per volume per loading
+                    sampler=sampler,
+                    num_workers=2,            # Number of worker threads for loading
+            )    
 
-        for i in range(3):
-            masks[i, :, :] = RLE_masking(segmentation[i])
-        
-        return {'image': image, 'masks': masks}
+    g = Generator()
+    g.manual_seed(42)        
+                           
+    patches_loader = tio.SubjectsLoader(
+                        queue,
+                        batch_size=8,
+                        shuffle=True,          # Enables shuffling
+                        generator=g
+                    )
+    return patches_loader
+                        
