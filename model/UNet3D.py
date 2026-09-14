@@ -23,7 +23,6 @@ class UNet(nn.Module):
         
         self.outc = Out(64, n_classes)
 
-        self.log = nn.Softmax()
 
     def forward(self, x):
         x1 = self.inc(x)
