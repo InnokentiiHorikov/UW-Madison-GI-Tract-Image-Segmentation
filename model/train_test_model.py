@@ -64,3 +64,5 @@ def train_test_model(epochs: int,
               valid_metrics = torch.vstack((valid_metrics, M))
               
       print(f"Epoch {i}, Loss: {np.mean(val_loss)} Metrics: {torch.mean(valid_metrics[1:, :], axis = 0)}")
+
+  torch.save(model.state_dict(), 'model.pth')
