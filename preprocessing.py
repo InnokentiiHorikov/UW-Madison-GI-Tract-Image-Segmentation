@@ -128,5 +128,23 @@ def tensor_to_gz(data: pd.DataFrame,
         nib.save(object_3d, obj_dir+f"_image({idx}).nii.gz")
         nib.save(masks, masks_dir+f"_masks({idx}).nii.gz")
 
+def to_create_paths(root_path: str):
+  "Output: List of Paths"
+  train_dir, valid_dir =  os.path.join(root_path, 'train/'), \
+                          os.path.join(root_path, 'valid/')
+  
+  train_obj_dir, train_mask_dir = os.path.join(train_dir, 'objects/'), \
+                                  os.path.join(train_dir, 'masks/')
+  
+  valid_obj_dir, valid_mask_dir = os.path.join(valid_dir, 'objects/'), \
+                                  os.path.join(valid_dir, 'masks/')
+  
+  to_check_existing_path = [train_obj_dir, train_mask_dir, 
+                            valid_obj_dir, valid_mask_dir]
+  
+  for path in to_check_existing_path:
+      if not os.path.isdir(path):
+          os.makedirs(path)
 
+  return to_check_existing_path
 
