@@ -3,10 +3,11 @@ import torchio as tio
 import torch
 import torchmetrics
 
-def train_test_model(epochs,
+def train_test_model(epochs: int,
                      model: torch.nn.Module,
                      loss_fn: torch.nn.Module,
                      metrics: torchmetrics.Metric,
+                     device: torch.device,
                      optimizer: torch.optim.Optimizer,
                      train_patches_loader: tio.SubjectsLoader,
                      valid_patches_loader: tio.SubjectsLoader
