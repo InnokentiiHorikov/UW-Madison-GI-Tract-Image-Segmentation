@@ -20,7 +20,7 @@ def train_test_model(epochs,
       
       for batch in train_tqdm:
           
-          image, masks = batch['one_image'][tio.DATA], batch['a_segmentation'][tio.DATA]
+          image, masks = batch['image'][tio.DATA], batch['segmentation'][tio.DATA]
           image, masks = image.to(device), masks.to(device) 
           #N, C, H, W, D -> N, C, D, H, W
           image, masks = image.permute(0, 1, 4, 2, 3), masks.permute(0, 1, 4, 2, 3)
