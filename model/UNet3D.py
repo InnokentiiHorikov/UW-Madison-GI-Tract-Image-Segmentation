@@ -57,6 +57,38 @@ class UNet(nn.Module):
         
         self.outc = torch.utils.checkpoint(self.outc)
 
+class TverskyLoss(nn.Module):
+    def __init__(self, alpha: float = 0.2, 
+                 beta: float = 1.0, eps: float = 1e-6):
+        """
+        Custom Tversky Loss Module.
+        alpha: controls penalty for false positives.
+        beta: controls penalty for false negatives.
+        """
+        super(TverskyLoss, self).__init__()
+        self.alpha = alpha
+        self.beta = beta
+        self.eps = eps
+
+    def forward(self, outputs: torch.Tensor, targets: torch.Tensor) -> torch.Tensor:
+        # Convert raw logits to probabilities
+        outputs = F.sigmoid(outputs).to(torch.float32)
+        
+        # Flatten batch, spatial dimensions
+        outputs = outputs.reshape(outputs.shape[0], outputs.shape[1], -1)
+        targets = targets.reshape(targets.shape[0], targets.shape[1], -1)
+        
+        # Calculate True Positives, False Positives, False Negatives
+        true_pos = (outputs * targets).sum(dim=2)
+        false_pos = ((1 - targets) * outputs).sum(dim=2)
+        false_neg = (targets * (1 - outputs)).sum(dim=2)
+        
+        # Calculate Tversky Index
+        tversky_index = (true_pos + self.eps) / (
+            true_pos + self.alpha * false_pos + self.beta * false_neg + self.eps
+        )
+        
+        return (1.0 - tversky_index.mean()).to(torch.float32)
 
 
 
@@ -71,5 +103,4 @@ def init_weights(m):
     elif isinstance(m, (nn.BatchNorm3d)):
         nn.init.constant_(m.weight, 1.0)  
         nn.init.constant_(m.bias, 0.01)   
-
 
