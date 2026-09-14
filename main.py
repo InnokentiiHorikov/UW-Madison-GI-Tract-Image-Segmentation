@@ -3,9 +3,8 @@ import numpy as np
 import preprocessing
 import torch
 from torch import nn 
-from train_test_model import *
+from model/train_test_model import train_test_model
 from model/UNet3D import *
-from torchmetrics.segmentation import GeneralizedDiceScore
 
 
 path = '/kaggle/input/uw-madison-gi-tract-image-segmentation/train.csv'
