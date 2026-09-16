@@ -1,4 +1,4 @@
-## STILL IN PROGRESS
+### BRIEF EXPLANATION 
 
 The purpose of this model is to detect and segmentate the tumors in the stomack, large and small bowel from the given MRI scans. 
 UNet3D has been choosen due to high accuracy in segmentation task and spatial connection of MRI scans.  
