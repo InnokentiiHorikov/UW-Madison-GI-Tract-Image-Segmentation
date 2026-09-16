@@ -9,3 +9,4 @@ For training model please open trainmodel.ipynd
 
 ![alt text](https://github.com/InnokentiiHorikov/UW-Madison-GI-Tract-Image-Segmentation/blob/main/images/360_310_scancs.png "scanc 360x310 1")
 ![alt text](https://github.com/InnokentiiHorikov/UW-Madison-GI-Tract-Image-Segmentation/blob/main/images/distribution.png "distribution")
+![alt text](https://github.com/InnokentiiHorikov/UW-Madison-GI-Tract-Image-Segmentation/blob/main/images/__results___58_0.png "result")
