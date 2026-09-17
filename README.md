@@ -1,9 +1,9 @@
 ### BRIEF EXPLANATION 
 
-The purpose of this model is to detect and segmentate the tumors in the stomack, large and small bowel from the given MRI scans. 
+The purpose of this model is to detect and segmentate the tumors in the stomach, large and small bowel from the given MRI scans. 
 UNet3D has been choosen due to high accuracy in segmentation task and spatial connection of MRI scans.  
 
-For detailed analysis you should read existed EDA from kaggle: - https://www.kaggle.com/code/dschettler8845/uwm-gi-tract-image-segmentation-eda; for brief analysis - analysis.ipynb
+For detailed analysis you should read EDA-notebook from kaggle: - https://www.kaggle.com/code/dschettler8845/uwm-gi-tract-image-segmentation-eda; for brief analysis - analysis.ipynb
 
 For training model you should open trainmodel.ipynd
 
